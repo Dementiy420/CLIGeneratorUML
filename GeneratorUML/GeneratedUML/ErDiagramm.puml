@@ -1,18 +1,24 @@
 @startuml
-class User {
-  +int id
-  +string name
+class User{
++Int32 Id
++String Name
++String Email
++String Password
 }
 
-class Order {
-  +int id
-  +string name
+class Accounts{
++Int32 Id
++String Login
++String Password
++String Email
 }
 
-class Account {
-  +int id
-  +string name
+class Books{
++Int32 Id
++String Title
++String Description
++String Author
++DateTime DateTime
 }
-User "1" --> "*" Order
-User "1" --> "1" Account
+
 @enduml
