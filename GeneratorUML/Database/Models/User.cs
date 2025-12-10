@@ -10,5 +10,6 @@ namespace GeneratorUML.Database.Models
         public string Name { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+        public Accounts accounts { get; set; }
     }
 }
