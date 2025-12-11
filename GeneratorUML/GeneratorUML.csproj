@@ -8,12 +8,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="GeneratedUML\**" />
+    <EmbeddedResource Remove="GeneratedUML\**" />
+    <None Remove="GeneratedUML\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DotMake.CommandLine" Version="3.0.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="GeneratedUML\" />
+    <Folder Include="Diagrams\" />
   </ItemGroup>
 
 </Project>
