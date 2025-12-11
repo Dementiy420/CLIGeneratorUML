@@ -10,6 +10,7 @@ namespace GeneratorUML.Database.Models
         public string Login { get; set; }
         public string Password { get; set; }
         public string Email { get; set; }
-        public List<Books> Books { get; set; }
+        public int PostForeignKey { get; set; }
+        public List<Post> Posts { get; set; }
     }
 }

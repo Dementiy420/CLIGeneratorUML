@@ -6,6 +6,6 @@ namespace GeneratorUML.Database
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Accounts> Accounts { get; set; }
-        public DbSet<Books> Books { get; set; }
+        public DbSet<Post> Books { get; set; }
     }
 }
