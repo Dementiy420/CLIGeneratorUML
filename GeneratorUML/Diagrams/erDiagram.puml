@@ -1,0 +1,29 @@
+@startuml
+class User{
++Int32 Id
++String Name
++String Email
++String Password
++Int32 AccountForeignKey
++Accounts Accounts
+}
+
+User "1" --- "1" Accounts
+class Accounts{
++Int32 Id
++String Login
++String Password
++String Email
++Int32 PostForeignKey
++List`1 Posts
+}
+
+Accounts "1" --- "M" Post
+class Post{
++Int32 Id
++String Title
++String Description
++DateTime DateTime
+}
+
+@enduml

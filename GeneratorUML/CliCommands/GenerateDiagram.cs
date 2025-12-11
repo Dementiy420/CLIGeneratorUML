@@ -22,50 +22,66 @@ namespace GeneratorUML.CliCommands
 
             Type? entityType = null!;
 
-            Assembly asmbly = Assembly.LoadFrom($"{Path}");
-
-            Type[] typesInApp = asmbly.GetTypes();
-
-            foreach (Type type1 in typesInApp) // поиск класса, который содержит в себе DBContext
+            try
             {
-                if (type1.IsSubclassOf(typeof(DbContext)))
-                {
-                    contextType = type1;
-                    Console.WriteLine("Класс, реализующий контекст: " + contextType.Name + "\n");
-                }
-                else
-                    continue;
-            }
+                Assembly asmbly = Assembly.LoadFrom($"{Path}");
 
-            foreach (PropertyInfo field in contextType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)) //Поиск полей DBSet<>
-            {
-                if (field.PropertyType.IsGenericType && field.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>))
+                Type[] typesInApp = asmbly.GetTypes();
+
+                foreach (Type type1 in typesInApp) // поиск класса, который содержит в себе DBContext
                 {
-                    entityType = field.PropertyType.GetGenericArguments()[0];
-                    _entities.Add(entityType); // сохранение в список сущностей
+                    if (type1.IsSubclassOf(typeof(DbContext)))
+                    {
+                        contextType = type1;
+                        Console.WriteLine("Класс, реализующий контекст: " + contextType.Name + "\n");
+                    }
+                    else
+                        continue;
                 }
             }
-
-            Console.WriteLine("Список сущностей: ");
-
-            foreach (var i in _entities)
+            catch (Exception ex) 
             {
-                Console.WriteLine(i.Name);
+                Console.WriteLine($"Возникла ошибка: {ex.Message}");
             }
 
-            Console.WriteLine("\n\n");
-
-            foreach (PropertyInfo field in contextType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)) //Формирование данных для UML
+            try
             {
-                if (field.PropertyType.IsGenericType && field.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>))
+
+
+                foreach (PropertyInfo field in contextType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)) //Поиск полей DBSet<>
                 {
-                    entityType = field.PropertyType.GetGenericArguments()[0];
-                    GetUmlClass(entityType);
+                    if (field.PropertyType.IsGenericType && field.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>))
+                    {
+                        entityType = field.PropertyType.GetGenericArguments()[0];
+                        _entities.Add(entityType); // сохранение в список сущностей
+                    }
                 }
-                GetEntityRelation(entityType);
-            }
 
-            CreateUml();
+                Console.WriteLine("Список сущностей: ");
+
+                foreach (var i in _entities)
+                {
+                    Console.WriteLine(i.Name);
+                }
+
+                Console.WriteLine("\n");
+
+                foreach (PropertyInfo field in contextType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)) //Формирование данных для UML
+                {
+                    if (field.PropertyType.IsGenericType && field.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>))
+                    {
+                        entityType = field.PropertyType.GetGenericArguments()[0];
+                        GetUmlClass(entityType);
+                    }
+                    GetEntityRelation(entityType);
+                }
+
+                CreateUml();
+            }
+            catch (Exception ex) 
+            {
+                Console.WriteLine($"Возникла ошибка: {ex.Message}");
+            }
         }
         private void GetEntityRelation(Type type) //Заполнение отношений между сущностями
         {
@@ -75,11 +91,11 @@ namespace GeneratorUML.CliCommands
                 {
                     if (entity.PropertyType == t && !entity.PropertyType.IsGenericType) // при связи 1 к 1
                     {
-                        _metadataUml.Add($"{type.Name} \"1\" --- \"1\" {t.Name}"); // добавить в буфер связь
+                        _metadataUml.Add($"{type.Name} \"1\" --- \"1\" {t.Name}\n"); // добавить в буфер связь
                     }
                     else if (entity.PropertyType.IsGenericType && entity.PropertyType.GetGenericArguments()[0].Name == t.Name) // при связи 1 к M
                     {
-                        _metadataUml.Add($"{type.Name} \"1\" --- \"M\" {t.Name}"); // добавить в буфер связь
+                        _metadataUml.Add($"{type.Name} \"1\" --- \"M\" {t.Name}\n"); // добавить в буфер связь
                     }
                 }
             }
